@@ -1,12 +1,14 @@
 const request = require('request');
 
-const reg = /<a\sclass="item"\shref="(.|\n)*?"/g;
+const regLinks = /<a\sclass="item"\shref="(.|\n)*?<\/a>/g;
+const regImgs = /loading="lazy"\ssrc="(.|\n)*?"/g;
 
-request('https://dou.ua/', function (error, response, body) {
+request('https://dou.ua/', (error, response, body) => {
+  const tempArrLink = body.toString().match(regLinks);
+  const tempArrImg = tempArrLink.join(' ').match(regImgs);
 
-  const tempArr = body.toString().match(reg);
-  const index = tempArr[1].search(/https/);
+  const index = tempArrImg[0].search(/src="/);
+  const arrImg = tempArrImg.map(link => link.slice(index + 5, link.length - 1));
 
-  const arr = tempArr.map(temp => temp.slice(index, temp.length - 1));
-  console.log("List of links:\n", arr)
+  console.log('List of img`s links:\n', arrImg);
 });
