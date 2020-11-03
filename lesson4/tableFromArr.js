@@ -18,4 +18,4 @@ const makeTable = data => {
 
 const table = makeTable(data);
 
-module.exports = table;
+module.exports = makeTable;

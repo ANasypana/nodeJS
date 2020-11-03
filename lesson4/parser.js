@@ -3,8 +3,9 @@ const fs = require('fs');
 const matchStr = require('./utils/matchStr');
 
 const url = 'https://auto.ria.com/uk/search/?indexName=auto,order_auto,newauto_search&categories.main.id=1&brand.id[0]=2233&price.currency=1&abroad.not=0&custom.not=1&page=0&size=10&scrollToAuto=28203699';
+const url1 = 'https://auto.ria.com/uk/search/?indexName=auto,order_auto,newauto_search&categories.main.id=1&brand.id[0]=79&price.currency=1&abroad.not=0&custom.not=1&page=0&size=10';
 
-const parser = url => {
+const parser = (url, name) => {
   try {
     const arr = [];
     request(url, (error, response, body) => {
@@ -19,7 +20,8 @@ const parser = url => {
         temp.push(+strUan[i].split(" ").join(''));
         arr.push(temp);
       }
-      fs.writeFile('table.json', JSON.stringify(arr), err => {
+
+      fs.writeFile(`${name}.json`, JSON.stringify(arr), err => {
 
       });
       return true
@@ -29,6 +31,6 @@ const parser = url => {
   }
 };
 
-parser(url);
+parser(url1);
 
 module.exports = parser;
