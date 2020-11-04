@@ -5,7 +5,6 @@
 /.pnp
 .pnp.js
 .idea/
-*.svg
 package-lock.json
 .editorconfig
 .eslintrc.js
