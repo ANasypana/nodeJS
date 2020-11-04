@@ -8,8 +8,6 @@
 package-lock.json
 .editorconfig
 .eslintrc.js
-svg/*.svg
-
 # testing
 /coverage
 
