@@ -11,7 +11,7 @@ export const makeSvg = async (name, arr) => {
       str += '\"' + arr[i].join('";"') + '"\r\n';
     };
     const date = dateToStr();
-    const nameFile = `./svg/${name}_${date}.svg`;
+    const nameFile = `./${name}_${date}.svg`;
     await fs.writeFile(nameFile, str);
     return `${name}_${date}.svg`
   } catch (err) {

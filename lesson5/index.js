@@ -24,8 +24,8 @@ http.createServer(async (req, res) => {
         res.write(makeTable(model.default));
         const nameFile = await makeSvg(name, model.default);
         if(nameFile){
-          cvgUrls.push(`/svg/${nameFile}`);
-          res.write(`<div><a href="./svg/${nameFile}">Скачать данные: ${nameFile}</a></div>`);
+          cvgUrls.push(`/${nameFile}`);
+          res.write(`<div><a href="/${nameFile}">Скачать данные: ${nameFile}</a></div>`);
         }
       }
     };
@@ -35,11 +35,11 @@ http.createServer(async (req, res) => {
       res.write(`<ul>${list}</ul>`);
     }
 
-    if(/^\/svg\/[\w\-]+\.svg$/.test(req.url)){
+    if(/^\/[\w\-]+\.svg$/.test(req.url)){
       res.write('<button>Load...</button>');
     }
 
-    if(!urls.includes(req.url) && req.url !== '/' && !/^\/svg\/[\w\-]+\.svg$/.test(req.url)){
+    if(!urls.includes(req.url) && req.url !== '/' && !/^\/[\w\-]+\.svg$/.test(req.url)){
       res.write('<h3>Sorry, this page does not exist</h3>');
     }
 
