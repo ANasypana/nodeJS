@@ -1,11 +1,13 @@
 import request from 'request';
-import fs from 'fs';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url'
 import { matchStr } from '../utils/matchStr.js';
 
-export const getModel = (url, name) => {
+export const getModel = async (url, name) => {
   try {
     const arr = [];
-    request(url, (error, response, body) => {
+    await request(url, async (error, response, body) => {
       const strModel = matchStr(body.toString(), '<span class="blue bold">', '</a');
       const strUsd = matchStr(body.toString(), 'data-currency="USD">', '</');
       const strUan = matchStr(body.toString(), 'data-currency="UAH">', '</');
@@ -16,9 +18,8 @@ export const getModel = (url, name) => {
         temp.push(+strUan[i].split(" ").join(''));
         arr.push(temp);
       }
-
-      fs.writeFile(`./data/models/${name}.json`, JSON.stringify(arr), err => {
-      });
+      const dirName = path.dirname(fileURLToPath(import.meta.url));
+      await fs.writeFile(path.join(dirName, `./data/models/${name}.json`), JSON.stringify(arr));
     });
   } catch (err){
     console.log(err.message);

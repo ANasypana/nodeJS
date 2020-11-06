@@ -3,7 +3,7 @@ import { dateToStr } from './utils/dateToStr.js';
 import { makeSvg } from  './utils/makeSvg.js';
 import { makeTable } from './utils/tableFromArr.js';
 import { transformName } from './utils/transformName.js';
-import data from './selectModel/data/data.json';
+import data from './selectModel/data/data/data.json';
 
 const PORT = 3000;
 
@@ -36,7 +36,8 @@ http.createServer(async (req, res) => {
     }
 
     if(/^\/[\w\-]+\.svg$/.test(req.url)){
-      res.write('<button>Load...</button>');
+      const name = req.url.slice(1);
+      res.write(`<div><label for=${name}>Select file ${name}:</label><input type="file" id=${name} name=${name}></div>`);
     }
 
     if(!urls.includes(req.url) && req.url !== '/' && !/^\/[\w\-]+\.svg$/.test(req.url)){
