@@ -15,6 +15,11 @@ export const getData = async () => {
         await fs.unlink(path.join(dirName, './data/models/', filename))));
     };
 
+    //Хотелось вначале запустить функцию getAllModels, потом взять файл, который она формирует.
+    // Данные нужны для построения приментивного сайта.
+    // Не получается - файл сразу не доступний. Можно через callback, но такаяже проблема возникнет в index.js
+    // Возможно проблема в архитектуре и в подходе.
+
     const data = await fs.readFile('./data/data/data.json');
     const arr = JSON.parse(data.toString());
 
