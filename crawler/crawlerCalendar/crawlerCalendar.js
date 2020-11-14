@@ -2,10 +2,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs/promises');
 const getDate = require('../utils/getDate');
 const checkDate = require('../utils/checkDate');
-const crawlerEvent = require('./crawlerEvent');
 
 const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
-  console.time("Running")
   const url = "https://dou.ua/calendar/archive/";
   let isLast = true;
   const browser = await puppeteer.launch({ headless: true });
@@ -17,8 +15,12 @@ const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
     //Information about date
     const dateLinks = await page.evaluate(() => {
       const dateHrefs = Array.from(document.querySelectorAll('div.info > a'));
-      const dateNumbers = Array.from(document.querySelectorAll('div.info > span'));
-      const numbers = dateNumbers.map(n => n.textContent.trim().split(" ")[0]);
+      const dateNumbers = Array.from(document.querySelectorAll('div.info'));
+      const numbers = dateNumbers.map(elm => {
+        const arr = elm.textContent.trim().split('\n\t');
+        const number = arr.length === 3 ? arr[2].split(' ')[0].trim() : 1
+        return number
+      });
 
       return dateHrefs.map((href, index) => ({url: href.href, number: numbers[index]}))
     });
@@ -42,16 +44,10 @@ const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
         url: elm.href,
         title: elm.textContent.trim(),
         place: where[index].trim(),
-        price: price[index].textContent.trim()}));
+        price: price[index] === undefined ? 'NaN' : price[index].textContent.trim()}));
 
       return events
     });
-
-    //Add info from event`s page
-    const updateEvents = await Promise.all(events.map(async event => {
-      const newEvent = await crawlerEvent(event.url, event, browser);
-      return newEvent
-    }));
 
     //Check date and add info about date to events
     let start = 0;
@@ -66,8 +62,8 @@ const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
           amount -= checkArr.length
         };
         amount = amount < length - start ? amount : length - start;
-        const temArr = updateEvents.slice(start, start + amount)
-          .map(elm => ({...elm, date: currentDate}))
+        const temArr = events.slice(start, start + amount)
+          .map(elm => ({...elm, date: currentDate}));
         data = [...data, ...temArr];
         start += amount
       }
@@ -76,8 +72,7 @@ const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
     await browser.close();
     if(!isLast){
       await fs.writeFile('./data.json', JSON.stringify(data));
-      console.timeEnd("Running")
-      return date
+      return
     }
     await crawlerCalendar(n+1, data, date)
 
@@ -86,8 +81,4 @@ const crawlerCalendar = async (n=1, data= [], date="2020-01-01") => {
   }
 }
 
-crawlerCalendar(1, [],'2020-10-31');
-
-
-
-
+module.exports = crawlerCalendar;

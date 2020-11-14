@@ -1,9 +1,8 @@
 const puppeteer = require('puppeteer');
+const getUrl = require('./getUrl');
 
 const crawlerEvent = async (url, obj, browser) => {
-
   const page = await browser.newPage();
-
   try {
     await page.goto(url);
     //Information about amount of views
@@ -19,17 +18,28 @@ const crawlerEvent = async (url, obj, browser) => {
     });
 
     //Links
-    const links = await page.evaluate(() => {
+    const tempLinks = await page.evaluate(() => {
       const datalinks = Array.from(document.querySelectorAll('article.b-typo  a'));
       return datalinks.map(elem => elem.href)
     });
 
-    return {...obj, views: views[0], themes, links}
+    const mailArr = tempLinks.filter(elm => /^mailto:*/.test(elm));
+    if(mailArr.length > 0) obj.mail = mailArr.map(elm => elm.slice(7));
+    const firstArr = tempLinks.filter(elm => !/^mailto:*/.test(elm));
+
+    const links = await Promise.all(firstArr.map(async elm => {
+      const newUrl = await getUrl(elm, browser);
+      return newUrl
+    }));
 
     await page.close();
+
+    return {...obj, views: views[0], themes, links}
+
   }catch (err){
     console.log(err.message)
   }
 }
 
 module.exports = crawlerEvent;
+

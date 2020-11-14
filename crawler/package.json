@@ -24,6 +24,7 @@
     "nodemon": "^2.0.4"
   },
   "dependencies": {
+    "moment": "^2.29.1",
     "puppeteer": "^5.4.1"
   }
 }
