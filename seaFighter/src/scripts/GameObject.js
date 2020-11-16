@@ -33,9 +33,11 @@ export class GameObject {
 
   stop(){
     this.player1.boats.forEach(b => {
+      b.element.removeEventListener('attack', b.damage.bind(b));
       b.element.remove();
     });
     this.player2.boats.forEach(b => {
+      b.element.removeEventListener('attack', b.damage.bind(b));
       b.element.remove();
     });
     this.round = 0;
