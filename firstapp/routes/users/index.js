@@ -2,7 +2,7 @@ const express = require('express');
 const { getAllUsers, getUser, createUser, updateUser, removeUser } = require('./route');
 
 const createUserSchema = require('../../schemas/createUserSchema');
-const validator = require('../../utils/validator');
+const validator = require('../_helpers/validator');
 
 
 const router = express.Router();

@@ -5,10 +5,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
 //Error-classes
-const NotFoundError = require('./utils/errors/notFoundError');
+const NotFoundError = require('../../utils/errors/notFoundError');
 
-const authRouter = require('./routes/auth/index');
-const usersRouter = require('./routes/users/index');
+const authRouter = require('../../routes/auth');
+const usersRouter = require('../../routes/users');
 
 const app = express();
 

@@ -1,5 +1,5 @@
 const Ajv = require('ajv');
-const ValidationError = require('./errors/validationError');
+const ValidationError = require('../../utils/errors/validationError');
 
 const validator = schema => (req, res, next) => {
   const ajv = new Ajv({ allErrors: true, jsonPointers: true });
